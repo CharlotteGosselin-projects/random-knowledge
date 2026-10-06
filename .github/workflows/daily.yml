@@ -1,0 +1,102 @@
+name: Daily digest
+
+on:
+  # The only way a digest is generated: once a day at 05:23 UTC (≈ 07:23 in Paris in summer).
+  schedule:
+    - cron: '23 5 * * *'
+  # Changes to the website itself are redeployed right away (this never generates a digest).
+  push:
+    paths:
+      - 'site/**'
+      - 'pipeline/build-site.js'
+      - '.github/workflows/daily.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: daily-digest
+  cancel-in-progress: false
+
+jobs:
+  digest:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm test
+
+      - name: Install Claude Code
+        run: npm install -g @anthropic-ai/claude-code
+
+      - name: Fetch, pick and summarize
+        env:
+          # Your Claude plan (from `claude setup-token`). Set ANTHROPIC_API_KEY instead to pay per use.
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Override with a repository variable named CLAUDE_MODEL (e.g. opus, haiku).
+          CLAUDE_MODEL: ${{ vars.CLAUDE_MODEL || 'sonnet' }}
+        run: |
+          [ -n "$CLAUDE_CODE_OAUTH_TOKEN" ] || unset CLAUDE_CODE_OAUTH_TOKEN
+          [ -n "$ANTHROPIC_API_KEY" ] || unset ANTHROPIC_API_KEY
+          if [ -z "${CLAUDE_CODE_OAUTH_TOKEN:-}${ANTHROPIC_API_KEY:-}" ]; then
+            echo "::error::Add the CLAUDE_CODE_OAUTH_TOKEN secret (or ANTHROPIC_API_KEY) in Settings → Secrets and variables → Actions."
+            exit 1
+          fi
+          npm run digest
+
+      - name: Commit the digest
+        run: |
+          git add data
+          if git diff --cached --quiet; then
+            echo "No new digest to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Digest for $(date -u +%F)"
+          git push
+
+  deploy:
+    needs: digest
+    # Runs after a successful digest, or on its own for a site-only push to the default branch.
+    if: >-
+      !cancelled() && needs.digest.result != 'failure'
+      && github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          # The digest job just pushed a commit; deploy the branch tip, not the triggering commit.
+          ref: ${{ github.event.repository.default_branch }}
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - run: node pipeline/build-site.js
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

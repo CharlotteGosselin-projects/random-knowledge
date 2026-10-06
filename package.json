@@ -1,0 +1,21 @@
+{
+  "name": "random-knowledge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Daily bilingual digest of recent coding, science and independent politics reads, summarized by Claude.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "digest": "node pipeline/run.js",
+    "test": "node --test test/*.test.js",
+    "build:site": "node pipeline/build-site.js",
+    "preview": "npm run build:site && npx --yes serve _site"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "fast-xml-parser": "^5.11.2",
+    "linkedom": "^0.18.13"
+  }
+}

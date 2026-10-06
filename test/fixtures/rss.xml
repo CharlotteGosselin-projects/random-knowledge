@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<channel>
+  <title>Example News</title>
+  <item>
+    <title>Inquiry finds &amp; reports</title>
+    <link>https://example.org/inquiry?utm_source=rss</link>
+    <pubDate>Mon, 05 Oct 2026 08:00:00 GMT</pubDate>
+    <dc:creator>Jane Doe</dc:creator>
+    <description>Short teaser.</description>
+    <content:encoded><![CDATA[<p>First paragraph with <b>bold</b>.</p><p>Second&nbsp;paragraph.</p><script>alert(1)</script>]]></content:encoded>
+  </item>
+  <item>
+    <title>No link item</title>
+    <guid isPermaLink="false">abc-123</guid>
+    <pubDate>Mon, 05 Oct 2026 09:00:00 GMT</pubDate>
+  </item>
+</channel>
+</rss>

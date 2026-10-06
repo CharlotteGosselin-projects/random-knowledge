@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Example Blog</title>
+  <entry>
+    <title type="html">Refactoring &lt;em&gt;safely&lt;/em&gt;</title>
+    <link rel="alternate" href="https://blog.example.com/refactoring"/>
+    <link rel="replies" href="https://blog.example.com/refactoring#comments"/>
+    <published>2026-10-04T10:00:00Z</published>
+    <author><name>Ada</name></author>
+    <summary>Summary text.</summary>
+    <content type="html">&lt;p&gt;Full content here.&lt;/p&gt;</content>
+  </entry>
+</feed>

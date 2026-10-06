@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Random Knowledge</title>
+  <meta name="description" content="Every day: three coding reads, three science papers and three independent politics stories, summarized in English and French.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧠</text></svg>">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="wrap top-inner">
+      <a class="brand" href="./">Random Knowledge</a>
+      <div class="controls">
+        <button id="surprise" class="btn" type="button"><span aria-hidden="true">🎲</span> <span class="label"></span></button>
+        <div class="lang" role="group" aria-label="Language">
+          <button type="button" data-lang="en">EN</button>
+          <button type="button" data-lang="fr">FR</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <p id="tagline" class="tagline"></p>
+      <nav class="days" aria-label="Archive">
+        <button id="prev" class="btn ghost" type="button"><span aria-hidden="true">←</span> <span class="label"></span></button>
+        <label class="day-pick">
+          <span id="day-label" class="sr-only"></span>
+          <select id="day"></select>
+        </label>
+        <button id="next" class="btn ghost" type="button"><span class="label"></span> <span aria-hidden="true">→</span></button>
+      </nav>
+    </section>
+
+    <section id="surprise-box" class="surprise" hidden></section>
+    <div id="status" class="status" role="status"></div>
+    <div id="digest"></div>
+  </main>
+
+  <footer class="wrap foot">
+    <p id="footnote"></p>
+  </footer>
+
+  <template id="card-tpl">
+    <article class="card">
+      <div class="meta">
+        <span class="source"></span>
+        <span class="badges"></span>
+      </div>
+      <h3 class="title"><a target="_blank" rel="noopener noreferrer"></a></h3>
+      <p class="tldr"></p>
+      <div class="summary"></div>
+      <p class="why"><strong></strong> <span></span></p>
+      <ul class="terms"></ul>
+      <div class="links">
+        <a class="read" target="_blank" rel="noopener noreferrer"></a>
+        <a class="discuss" target="_blank" rel="noopener noreferrer" hidden></a>
+        <span class="date"></span>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
